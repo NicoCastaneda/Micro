@@ -10,9 +10,10 @@
     <div class="container">
         <h1>Temperature Monitor</h1>
         <p id="temperature">--</p>
+        <p class="temperature-status" id="temperature-status"></p>
         <div class="buttonContainer">
             <button id="connect-button">Connect to ESP32</button>
-        <button id="disconnect-button">Disconnect</button>
+            <button id="disconnect-button">Disconnect</button>
         </div>
         
     </div>
@@ -21,6 +22,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const temperatureDisplay = document.getElementById("temperature");
+            const temperatureRange = document.getElementById("temperature-range");
+            const temperatureStatus = document.getElementById("temperature-status");
             const connectButton = document.getElementById("connect-button");
             const disconnectButton = document.getElementById("disconnect-button");
 
@@ -80,8 +83,24 @@
                     buffer = buffer.slice(newlineIndex + 1);
                     const temperature = parseFloat(line);
                     if (!isNaN(temperature)) {
-                        console.log('Temperature:', temperature.toFixed(2));
-                        temperatureDisplay.textContent = `${temperature.toFixed(2)} °C`;
+                        temp = temperature.toFixed(2);
+                        console.log('Temperature:', temp);
+                        temperatureDisplay.textContent = `${temp} °C`;
+
+                        // Determinar el estado de la temperatura
+                        const minTemperature = 20.00
+                        const maxTemperature = 25.00
+
+                        if (temp < minTemperature) {
+                            temperatureStatus.textContent = 'La temperatura podría estar baja.';
+                            temperatureStatus.style.color = 'orange';
+                        } else if (temp > maxTemperature) {
+                            temperatureStatus.textContent = 'La temperatura podría estar alta.';
+                            temperatureStatus.style.color = 'orange';
+                        } else {
+                            temperatureStatus.textContent = 'Temperatura dentro del rango normal.';
+                            temperatureStatus.style.color = 'white';
+                        } 
                     }
                 }
             }
@@ -97,14 +116,15 @@
                     await port.close();
                     port = null;
                     temperatureDisplay.textContent = '--';
+                    temperatureStatus.textContent = 'Status: --';
                 }
             }
 
             connectButton.addEventListener('click', connectToSerial);
             disconnectButton.addEventListener('click', disconnectFromSerial);
 
-            // Close the port when the page is unloaded
-            window.addEventListener('beforeunload', async () => {
+                        // Close the port when the page is unloaded
+                        window.addEventListener('beforeunload', async () => {
                 if (port) {
                     await disconnectFromSerial();
                 }
@@ -113,3 +133,4 @@
     </script>
 </body>
 </html>
+

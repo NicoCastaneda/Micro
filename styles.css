@@ -67,11 +67,11 @@ button:active {
 #temperature {
     background-color: #1e1e1e;
     color: #b2b2b2;
-    font-size: 2.5em; /* Aumentar el tamaño de la fuente */
-    font-weight: bold; /* Hacer el texto en negrita */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agregar sombra al texto para mejorar la legibilidad */
-    padding: 20px; /* Agregar espacio alrededor del texto */
-    border: 3px solid #333; /* Agregar un borde alrededor del elemento */
-    border-radius: 10px; /* Redondear las esquinas del borde */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Agregar una sombra alrededor del elemento */
+    font-size: 2.5em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border: 3px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
