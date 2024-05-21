@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Temperature Monitor</h1>
+        <p id="temperature">--</p>
+        <div class="buttonContainer">
+            <button id="connect-button">Connect to ESP32</button>
+        <button id="disconnect-button">Disconnect</button>
+        </div>
+        
+    </div>
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const temperatureDisplay = document.getElementById("temperature");
+            const connectButton = document.getElementById("connect-button");
+            const disconnectButton = document.getElementById("disconnect-button");
+
+            let port;
+            let reader;
+            let inputDone;
+
+            async function connectToSerial() {
+                if (port) {
+                    console.warn('Port is already open');
+                    return;
+                }
+
+                try {
+                    // Solicitar un puerto y abrir una conexión.
+                    port = await navigator.serial.requestPort();
+                    await port.open({ baudRate: 115200 });
+
+                    // Obtener un lector del puerto.
+                    const decoder = new TextDecoderStream();
+                    inputDone = port.readable.pipeTo(decoder.writable);
+                    reader = decoder.readable.getReader();
+
+                    // Leer datos continuamente del dispositivo serie.
+                    readLoop();
+                } catch (error) {
+                    console.error('There was an error opening the serial port:', error);
+                    port = null;  // Reset port if opening fails
+                }
+            }
+
+            async function readLoop() {
+                try {
+                    while (true) {
+                        const { value, done } = await reader.read();
+                        if (done) {
+                            // Permitir que el puerto serie se cierre más tarde.
+                            reader.releaseLock();
+                            break;
+                        } 
+                        if (value) {
+                            handleSerialData(value);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Read error:', error);
+                }
+            }
+
+            let buffer = '';
+
+            function handleSerialData(data) {
+                buffer += data;
+                const newlineIndex = buffer.indexOf('\n');
+                if (newlineIndex >= 0) {
+                    const line = buffer.slice(0, newlineIndex);
+                    buffer = buffer.slice(newlineIndex + 1);
+                    const temperature = parseFloat(line);
+                    if (!isNaN(temperature)) {
+                        console.log('Temperature:', temperature.toFixed(2));
+                        temperatureDisplay.textContent = `${temperature.toFixed(2)} °C`;
+                    }
+                }
+            }
+
+            async function disconnectFromSerial() {
+                if (reader) {
+                    await reader.cancel();
+                    await inputDone.catch(() => {}); // Asegurarse de que el stream esté cerrado
+                    reader.releaseLock();
+                    reader = null;
+                }
+                if (port) {
+                    await port.close();
+                    port = null;
+                    temperatureDisplay.textContent = '--';
+                }
+            }
+
+            connectButton.addEventListener('click', connectToSerial);
+            disconnectButton.addEventListener('click', disconnectFromSerial);
+
+            // Close the port when the page is unloaded
+            window.addEventListener('beforeunload', async () => {
+                if (port) {
+                    await disconnectFromSerial();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

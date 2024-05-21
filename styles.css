@@ -1,0 +1,77 @@
+/* Reset some basic elements for consistency across browsers */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e1e1e, #3c3c3c);
+    color: #fff;
+}
+
+.container {
+    background: #333;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    position: relative; 
+}
+
+h1 {
+    color: #ffd700;
+    margin-bottom: 1em;
+}
+
+p {
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #848049;
+    font-weight: 800;
+    color: #333;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #ffd700;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.buttonContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1em;
+    margin-top: 2em;
+}
+
+#temperature {
+    background-color: #1e1e1e;
+    color: #b2b2b2;
+    font-size: 2.5em; /* Aumentar el tamaño de la fuente */
+    font-weight: bold; /* Hacer el texto en negrita */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agregar sombra al texto para mejorar la legibilidad */
+    padding: 20px; /* Agregar espacio alrededor del texto */
+    border: 3px solid #333; /* Agregar un borde alrededor del elemento */
+    border-radius: 10px; /* Redondear las esquinas del borde */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Agregar una sombra alrededor del elemento */
+}
